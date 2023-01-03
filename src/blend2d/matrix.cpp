@@ -482,27 +482,29 @@ BL_HIDDEN void blTransformRtInit_AVX(BLRuntimeContext* rt) noexcept;
 } // {BLTransformPrivate}
 
 void blTransformRtInit(BLRuntimeContext* rt) noexcept {
-#if !defined(BL_TARGET_OPT_SSE2)
+
+#ifdef BL_BUILD_OPT_SSE2
+  if (blRuntimeHasSSE2(rt)) {
+    BLTransformPrivate::blTransformRtInit_SSE2(rt);
+    return;
+  }
+#endif
+
+#ifdef BL_BUILD_OPT_AVX
+  if (blRuntimeHasAVX(rt)) {
+    BLTransformPrivate::blTransformRtInit_AVX(rt);
+    return;
+  }
+#endif
+
   blUnused(rt);
   BLMapPointDArrayFunc* funcs = blMatrix2DMapPointDArrayFuncs;
-
   blAssignFunc(&funcs[BL_MATRIX2D_TYPE_IDENTITY ], BLTransformPrivate::blMatrix2DMapPointDArrayIdentity);
   blAssignFunc(&funcs[BL_MATRIX2D_TYPE_TRANSLATE], BLTransformPrivate::blMatrix2DMapPointDArrayTranslate);
   blAssignFunc(&funcs[BL_MATRIX2D_TYPE_SCALE    ], BLTransformPrivate::blMatrix2DMapPointDArrayScale);
   blAssignFunc(&funcs[BL_MATRIX2D_TYPE_SWAP     ], BLTransformPrivate::blMatrix2DMapPointDArraySwap);
   blAssignFunc(&funcs[BL_MATRIX2D_TYPE_AFFINE   ], BLTransformPrivate::blMatrix2DMapPointDArrayAffine);
   blAssignFunc(&funcs[BL_MATRIX2D_TYPE_INVALID  ], BLTransformPrivate::blMatrix2DMapPointDArrayAffine);
-#endif
-
-#ifdef BL_BUILD_OPT_SSE2
-  if (blRuntimeHasSSE2(rt))
-    BLTransformPrivate::blTransformRtInit_SSE2(rt);
-#endif
-
-#ifdef BL_BUILD_OPT_AVX
-  if (blRuntimeHasAVX(rt))
-    BLTransformPrivate::blTransformRtInit_AVX(rt);
-#endif
 }
 
 // BLTransform - Tests
