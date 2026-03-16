@@ -599,6 +599,8 @@ BL_API_IMPL BLResult blFileGetSize(BLFileCore* self, uint64_t* fileSizeOut) noex
 #undef BL_FILE64_API
 #endif
 
+#if 0
+
 #if defined(_WIN32)
 
 // BLFileMapping - Windows Implementation
@@ -745,6 +747,8 @@ static BLResult createMemoryMappedFile(BLArray<uint8_t>* dst, BLFile& file, size
   return BLArrayPrivate::replaceInstance(dst, &newO);
 }
 
+#endif
+
 // BLFileSystem - Read & Write File
 // ================================
 
@@ -773,6 +777,7 @@ BL_API_IMPL BLResult blFileSystemReadFile(const char* fileName, BLArrayCore* dst
 
   size_t size = size_t(size64);
 
+  #if 0
   // Use memory mapped file IO if enabled.
   if (readFlags & BL_FILE_READ_MMAP_ENABLED) {
     bool isSmall = size < BLFileMapping::kSmallFileSizeThreshold;
@@ -785,6 +790,7 @@ BL_API_IMPL BLResult blFileSystemReadFile(const char* fileName, BLArrayCore* dst
         return result;
     }
   }
+  #endif
 
   uint8_t* data;
   BL_PROPAGATE(dst.modifyOp(BL_MODIFY_OP_ASSIGN_FIT, size, &data));
