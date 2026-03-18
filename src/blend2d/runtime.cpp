@@ -150,7 +150,7 @@ static BL_INLINE void blRuntimeInitSystemInfo(BLRuntimeContext* rt) noexcept {
   GetSystemInfo(&si);
   info.threadStackSize = si.dwAllocationGranularity;
   info.allocationGranularity = si.dwAllocationGranularity;
-#elif defined(__ORBIS__)
+#elif defined(__ORBIS__) || defined(__PROSPERO__)
   info.threadStackSize = uint32_t(PTHREAD_STACK_MIN);
   info.allocationGranularity = uint32_t(getpagesize());
 #else
